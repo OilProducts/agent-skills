@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web UI Design"
+  short_description: "Craft intentional, consistent web app UIs"
+  default_prompt: "Use $web-ui-design to design or refine this app UI with a reusable system and consistency checks."
