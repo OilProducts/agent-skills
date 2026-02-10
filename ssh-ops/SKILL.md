@@ -1,6 +1,6 @@
 ---
 name: ssh-ops
-description: Use for SSH and remote shell tasks through the shell-only ssh-ops wrappers (`scripts/ssh_ops.sh`). Supports ad-hoc host/user/auth, command execution, guarded PTY workflows, scp copy, credentials, and transcript-aware troubleshooting. Do not use MCP SSH tools.
+description: Use for SSH and remote shell tasks through the shell-only ssh-ops wrappers (`scripts/ssh_ops.sh`). Supports ad-hoc host/user/auth, command execution, guarded PTY workflows, scp copy, credentials, and transcript-aware troubleshooting.
 ---
 
 # SSH Ops
@@ -11,10 +11,8 @@ Use shell wrappers only.
 1. Confirm wrapper exists: `/Users/chris/projects/ssh-ops/scripts/ssh_ops.sh`.
 2. Confirm system SSH exists: `/usr/bin/ssh`.
 3. Run commands from the workspace CWD where SSH state should live (`./.ssh-ops`).
-4. Do not use MCP SSH tools.
 
 ## Policy
-- No MCP usage for SSH.
 - Use `scripts/ssh_ops.sh` commands only.
 - State path is CWD-local: `./.ssh-ops`.
 - Keep the same CWD across session-open/exec/pty/scp/session-close for continuity.

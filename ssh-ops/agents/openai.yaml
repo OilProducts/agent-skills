@@ -1,4 +1,4 @@
 interface:
   display_name: "SSH Ops"
-  short_description: "Run SSH via shell wrappers (no MCP)"
+  short_description: "Run SSH via shell wrappers"
   default_prompt: "Use /Users/chris/projects/ssh-ops/scripts/ssh_ops.sh for SSH tasks only, prefer non-PTY, and return transcript offsets with results."
