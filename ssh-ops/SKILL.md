@@ -10,12 +10,13 @@ Use shell wrappers only.
 ## Preflight
 1. Confirm wrapper exists: `/Users/chris/projects/ssh-ops/scripts/ssh_ops.sh`.
 2. Confirm system SSH exists: `/usr/bin/ssh`.
-3. Run commands from the workspace CWD where SSH state should live (`./.ssh-ops`).
+3. Decide state-dir strategy:
+   - default: wrapper auto-uses `/tmp/ssh-ops-$USER/<cwd-hash>`
+   - explicit: pass `--state-dir /tmp/ssh-ops-<name>` (recommended for long sessions and scripts)
 
 ## Policy
 - Use `scripts/ssh_ops.sh` commands only.
-- State path is CWD-local: `./.ssh-ops`.
-- Keep the same CWD across session-open/exec/pty/scp/session-close for continuity.
+- Keep the same state dir across session-open/exec/pty/scp/session-close for continuity.
 - Default to non-PTY command execution.
 - PTY only when needed, with strict guardrails and override flag.
 - Report exit codes, stderr summary, and transcript offsets.

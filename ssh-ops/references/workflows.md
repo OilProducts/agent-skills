@@ -1,7 +1,8 @@
 # Workflows
 
-State root for all commands is `./.ssh-ops` (relative to the current working directory).
-Use the same CWD for a full session lifecycle.
+State root defaults to `/tmp/ssh-ops-$USER/<cwd-hash>`.
+You can override with `--state-dir ...` or `SSH_OPS_STATE_DIR`.
+Use the same state dir for a full session lifecycle.
 
 ## Command workflow (preferred)
 1. `session-open`

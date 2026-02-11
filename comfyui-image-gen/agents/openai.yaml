@@ -1,0 +1,4 @@
+interface:
+  display_name: "ComfyUI Image Gen"
+  short_description: "Run ComfyUI API workflows with deterministic bindings"
+  default_prompt: "Use $comfyui-image-gen to run a ComfyUI workflow JSON via Local API, apply explicit input bindings, and return output file paths plus run metadata."
