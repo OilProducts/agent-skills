@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bevy Eyes-On"
+  short_description: "Fast Bevy screenshots (delay or BRP sequence)"
+  default_prompt: "Use $bevy-eyes-on to capture a Bevy screenshot quickly with either a timed wait or a BRP request sequence."

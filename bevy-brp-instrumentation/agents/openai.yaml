@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bevy BRP Instrumentation"
+  short_description: "Add BRP hooks for deterministic scenario control"
+  default_prompt: "Instrument a Bevy app with BRP hooks required by bevy-eyes-on and other BRP-driven deterministic workflows."
