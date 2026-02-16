@@ -1,0 +1,4 @@
+interface:
+  display_name: "Loop Orchestrator"
+  short_description: "Run doer-judge loops with artifact handoff"
+  default_prompt: "Use $loop-orchestrator to run an implement-then-evaluate loop with separate doer and judge roles and machine-readable artifacts."

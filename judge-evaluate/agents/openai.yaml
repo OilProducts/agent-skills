@@ -1,0 +1,4 @@
+interface:
+  display_name: "Judge Evaluate"
+  short_description: "Evaluate patches and produce verdict artifacts"
+  default_prompt: "Use $judge-evaluate to evaluate a proposed patch/handoff against checks and output verdict.json without modifying source files."

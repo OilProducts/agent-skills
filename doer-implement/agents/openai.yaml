@@ -1,0 +1,4 @@
+interface:
+  display_name: "Doer Implement"
+  short_description: "Implement task cards and produce handoff artifacts"
+  default_prompt: "Use $doer-implement to implement the assigned task, run smoke checks, and output patch.diff plus handoff.json without grading final correctness."

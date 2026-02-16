@@ -1,0 +1,4 @@
+interface:
+  display_name: "Auditor Gate"
+  short_description: "Run governance gate checks and emit audit artifacts"
+  default_prompt: "Use $auditor-gate to enforce final governance checks on a judged patch and output audit.json without modifying source files."
