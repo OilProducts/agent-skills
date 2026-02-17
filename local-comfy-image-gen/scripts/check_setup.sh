@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO="${REPO:-${1:-}}"
-COMFY_URL="${COMFY_URL:-http://127.0.0.1:8188}"
+COMFY_URL="${COMFY_URL:-http://192.168.1.224:8188}"
 
 auto_detect_repo() {
   if [ -n "$REPO" ]; then

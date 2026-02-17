@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-COMFY_URL="http://127.0.0.1:8188"
+COMFY_URL="http://192.168.1.224:8188"
 CHECK_OBJECT_INFO=0
 TIMEOUT=5
 
@@ -10,7 +10,7 @@ usage() {
 Usage: $0 [--comfy-url URL] [--check-object-info] [--timeout-sec N]
 
 Options:
-  --comfy-url URL         ComfyUI base URL (default: http://127.0.0.1:8188)
+  --comfy-url URL         ComfyUI base URL (default: http://192.168.1.224:8188)
   --check-object-info     Also verify GET /object_info
   --timeout-sec N         curl timeout seconds (default: 5)
 USAGE

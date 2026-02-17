@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO="${REPO:-}"
-COMFY_URL="${COMFY_URL:-http://127.0.0.1:8188}"
+COMFY_URL="${COMFY_URL:-http://192.168.1.224:8188}"
 BOOK_ID=""
 PAGE=""
 PHASE=""
@@ -25,7 +25,7 @@ Optional:
   --review PATH
   --source-image PATH
   --repo PATH                (default: auto-detect from cwd)
-  --comfy-url URL            (default: COMFY_URL env or http://127.0.0.1:8188)
+  --comfy-url URL            (default: COMFY_URL env or http://192.168.1.224:8188)
   --dry-run
 USAGE
 }

@@ -16,7 +16,7 @@ Execute local ComfyUI rendering workflows through the project orchestrator, not 
 - If required files are missing, fix setup before rendering.
 
 2. Ensure ComfyUI server is available.
-- If already running on `http://127.0.0.1:8188`, reuse it.
+- If already running on `http://192.168.1.224:8188`, reuse it.
 - Else run `scripts/start_comfy.sh`.
 
 3. Build or update RenderSpec using a structured prompt pattern.

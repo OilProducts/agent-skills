@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO="${REPO:-}"
-COMFY_URL="${COMFY_URL:-http://127.0.0.1:8188}"
+COMFY_URL="${COMFY_URL:-http://192.168.1.224:8188}"
 HOST="${HOST:-0.0.0.0}"
 PORT="${PORT:-8188}"
 

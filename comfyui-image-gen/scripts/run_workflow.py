@@ -99,7 +99,7 @@ def gather_images(history_entry: dict) -> list[dict]:
 def main() -> None:
     ap = argparse.ArgumentParser(description="Queue a ComfyUI workflow JSON and collect outputs.")
     ap.add_argument("--workflow", required=True, help="Path to workflow JSON (.api.json) used as /prompt payload")
-    ap.add_argument("--comfy-url", default="http://127.0.0.1:8188")
+    ap.add_argument("--comfy-url", default="http://192.168.1.224:8188")
     ap.add_argument("--client-id", default=str(uuid.uuid4()))
     ap.add_argument("--set", dest="sets", action="append", default=[], help="Binding override: node.inputs.key=value")
     ap.add_argument("--out-dir", help="Directory to download output images")

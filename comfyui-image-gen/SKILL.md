@@ -43,20 +43,26 @@ Prefer deterministic runs:
 - Change one thing at a time (prompt text, seed, one binding).
 - Keep successful workflow + binding combinations as reusable presets.
 
+6. Select the most advanced model available before queueing.
+- Inspect available checkpoints/encoders from ComfyUI (`GET /object_info`, model directories, or known-good recent runs).
+- Always prefer the strongest compatible stack in this order: `FLUX` > `SDXL` > legacy SD 1.x/2.x.
+- Do not default to SD 1.5 when FLUX or SDXL is available.
+- If only a lower-tier model is available, state that explicitly and proceed with the best available option.
+
 ## Commands
 
 Health check:
 
 ```bash
 $CODEX_HOME/skills/comfyui-image-gen/scripts/check_comfy.sh \
-  --comfy-url http://127.0.0.1:8188
+  --comfy-url http://192.168.1.224:8188
 ```
 
 Queue a workflow and download outputs:
 
 ```bash
 $CODEX_HOME/skills/comfyui-image-gen/scripts/run_workflow.sh \
-  --comfy-url http://127.0.0.1:8188 \
+  --comfy-url http://192.168.1.224:8188 \
   --workflow workflows/draft.api.json \
   --set "6.inputs.text=anthropomorphic beetle eating a balanced breakfast, storybook style" \
   --set "3.inputs.seed=123456" \
@@ -76,6 +82,8 @@ $CODEX_HOME/skills/comfyui-image-gen/scripts/run_workflow.sh \
 - Do not assume a fixed repo path; always accept explicit paths/URLs.
 - Prefer API workflow JSON + explicit bindings over manual UI-only steps.
 - Treat prompt, workflow, and seed as a reproducibility unit.
+- Always choose the most advanced available model family for the requested task; use legacy families only as fallback.
+- Before generation, state the exact model(s) selected (checkpoint/UNet, text encoders, VAE when applicable).
 - For remote GPUs, set `--comfy-url http://<host>:<port>` explicitly.
 - If a run fails, report the exact API endpoint/response and failing node id when available.
 

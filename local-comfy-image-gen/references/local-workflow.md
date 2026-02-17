@@ -39,13 +39,13 @@ High-value artifacts:
 
 Default local URL:
 
-- `http://127.0.0.1:8188`
+- `http://192.168.1.224:8188`
 
 Useful health checks:
 
 ```bash
-curl -sS http://127.0.0.1:8188/system_stats
-curl -sS http://127.0.0.1:8188/object_info
+curl -sS http://192.168.1.224:8188/system_stats
+curl -sS http://192.168.1.224:8188/object_info
 ```
 
 ## Remote-agent mode (GPU box + laptop)
@@ -59,7 +59,7 @@ Use this when ComfyUI runs on a GPU host and Codex/agent runs on a different mac
 ```bash
 REPO=/path/to/local-image-gen \
 HOST=0.0.0.0 \
-COMFY_URL=http://127.0.0.1:8188 \
+COMFY_URL=http://192.168.1.224:8188 \
 $CODEX_HOME/skills/local-comfy-image-gen/scripts/start_comfy.sh
 ```
 
