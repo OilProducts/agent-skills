@@ -126,7 +126,7 @@ Create `art_prompts.md`:
 - Per-spread prompts that reference the character sheet + style guide
 - Negative prompts (what to avoid) and continuity reminders
 
-If image generation is desired and available, use the `imagegen` skill after prompts are ready.
+If image generation is desired and available, use `comfyui-image-gen` for local/remote ComfyUI workflows or `imagegen` for hosted OpenAI image generation after prompts are ready.
 For production runs and QA loops, follow `references/illustrated-production.md`.
 
 Practical prompt rules:

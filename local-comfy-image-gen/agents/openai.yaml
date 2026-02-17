@@ -1,4 +1,0 @@
-interface:
-  display_name: "Local Comfy Image Gen"
-  short_description: "Run local ComfyUI/FLUX rendering pipelines"
-  default_prompt: "Use $local-comfy-image-gen to run local ComfyUI drafts/refines with our RenderSpec workflow."

@@ -1,93 +1,112 @@
 ---
 name: comfyui-image-gen
-description: "Run ComfyUI local API image-generation workflows (local or remote) with deterministic workflow JSON + bindings, queue monitoring, and output retrieval. Use when a task should be executed via ComfyUI instead of hosted image APIs."
+description: "Unified ComfyUI skill for direct API workflow runs and RenderSpec-based multi-page pipeline phases (draft/refine/inpaint/upscale_print) with reproducibility artifacts. Use for both ad-hoc workflow execution and full storybook/page production loops."
 ---
 
 # ComfyUI Image Gen
 
 ## Overview
 
-Execute image generation through ComfyUI's Local API using workflow JSON files and explicit input bindings.
+Use this single skill for both:
+- direct ComfyUI API workflow runs (`run_workflow.sh`)
+- orchestrated page pipelines (`run_phase.sh` + RenderSpec/review artifacts)
 
-Prefer deterministic runs:
-- keep workflow JSON under version control
-- set input overrides explicitly per run
-- preserve run metadata and output manifests
+Keep runs reproducible by preserving workflow JSON, explicit bindings, seeds, run metadata, and per-page artifacts.
 
-## When to use
+## Modes
 
-- User explicitly wants ComfyUI generation
-- You have a compatible workflow JSON and reachable ComfyUI endpoint
-- You need local/remote GPU execution outside hosted image APIs
+### Mode A: Direct workflow run
 
-## Workflow
+Use when you already have an `.api.json` workflow and want to queue/download outputs quickly.
 
-1. Check ComfyUI health.
-- Run `scripts/check_comfy.sh`.
-- Confirm `system_stats` and (optionally) `object_info` respond.
+Flow:
+1. Check endpoint health (`scripts/check_comfy.sh`).
+2. Select strongest available model stack (prefer `FLUX` > `SDXL` > SD1.x/2.x).
+3. Run `scripts/run_workflow.sh` with explicit `--set` overrides.
+4. Inspect outputs and iterate one variable at a time.
 
-2. Prepare workflow JSON.
-- Start from a known-good `.api.json` workflow export.
-- Avoid ad-hoc node rewiring in prompts; change inputs through explicit bindings.
+### Mode B: Orchestrated page pipeline
 
-3. Shape generation intent with a structured prompt spec.
-- Use compact fields: use case, primary request, subject, style, composition, lighting, constraints, avoid.
-- Keep constraints explicit (`no text`, anatomy continuity, composition, safety).
+Use when producing books/multi-page assets with stable artifacts and deliberate QA.
 
-4. Run workflow.
-- Use `scripts/run_workflow.sh`.
-- Pass `--workflow` and optional `--set node.input=value` overrides.
-- Use `--out-dir` to download generated images.
-
-5. Inspect outputs and iterate deliberately.
-- Change one thing at a time (prompt text, seed, one binding).
-- Keep successful workflow + binding combinations as reusable presets.
-
-6. Select the most advanced model available before queueing.
-- Inspect available checkpoints/encoders from ComfyUI (`GET /object_info`, model directories, or known-good recent runs).
-- Always prefer the strongest compatible stack in this order: `FLUX` > `SDXL` > legacy SD 1.x/2.x.
-- Do not default to SD 1.5 when FLUX or SDXL is available.
-- If only a lower-tier model is available, state that explicitly and proceed with the best available option.
+Flow:
+1. Verify setup (`scripts/check_setup.sh`).
+2. Ensure Comfy runtime is available (`scripts/start_comfy.sh`) when hosting locally.
+3. Author/update `renderspec.json`.
+4. Run one phase at a time via `scripts/run_phase.sh`.
+5. Inspect per-page outputs and record decisions in `review.json` before refine/final steps.
+6. Keep `renderspec.json`, `review.json`, and `jobs/*.json` manifests.
 
 ## Commands
 
-Health check:
+Endpoint health:
 
 ```bash
 $CODEX_HOME/skills/comfyui-image-gen/scripts/check_comfy.sh \
-  --comfy-url http://192.168.1.224:8188
+  --comfy-url http://192.168.1.224:8188 \
+  --check-object-info
 ```
 
-Queue a workflow and download outputs:
+Direct workflow run:
 
 ```bash
 $CODEX_HOME/skills/comfyui-image-gen/scripts/run_workflow.sh \
   --comfy-url http://192.168.1.224:8188 \
   --workflow workflows/draft.api.json \
-  --set "6.inputs.text=anthropomorphic beetle eating a balanced breakfast, storybook style" \
-  --set "3.inputs.seed=123456" \
+  --set "3.inputs.text=storybook scene, no text" \
+  --set "7.inputs.noise_seed=123456" \
   --out-dir output/comfy
 ```
 
-Dry-run (validate and print request metadata without queueing):
+Pipeline setup check:
 
 ```bash
-$CODEX_HOME/skills/comfyui-image-gen/scripts/run_workflow.sh \
-  --workflow workflows/draft.api.json \
-  --dry-run
+$CODEX_HOME/skills/comfyui-image-gen/scripts/check_setup.sh
 ```
+
+Pipeline draft phase:
+
+```bash
+$CODEX_HOME/skills/comfyui-image-gen/scripts/run_phase.sh \
+  --book-id gingerbear_01 \
+  --page 7 \
+  --phase draft \
+  --renderspec $CODEX_HOME/skills/comfyui-image-gen/templates/renderspec.example.json \
+  --books-dir books
+```
+
+Pipeline refine phase:
+
+```bash
+$CODEX_HOME/skills/comfyui-image-gen/scripts/run_phase.sh \
+  --book-id gingerbear_01 \
+  --page 7 \
+  --phase refine \
+  --renderspec books/gingerbear_01/pages/0007/renderspec.json \
+  --review books/gingerbear_01/pages/0007/review.json \
+  --source-image books/gingerbear_01/pages/0007/draft/001_some_image.png \
+  --books-dir books
+```
+
+## Model selection rule
+
+Before queueing, state the exact model components used (checkpoint/UNet, text encoders, VAE).
+Always prefer the strongest compatible family available:
+- `FLUX`
+- `SDXL`
+- SD1.x/2.x (fallback only)
 
 ## Operating rules
 
-- Do not assume a fixed repo path; always accept explicit paths/URLs.
-- Prefer API workflow JSON + explicit bindings over manual UI-only steps.
-- Treat prompt, workflow, and seed as a reproducibility unit.
-- Always choose the most advanced available model family for the requested task; use legacy families only as fallback.
-- Before generation, state the exact model(s) selected (checkpoint/UNet, text encoders, VAE when applicable).
-- For remote GPUs, set `--comfy-url http://<host>:<port>` explicitly.
-- If a run fails, report the exact API endpoint/response and failing node id when available.
+- Do not assume a fixed workspace path; use explicit paths/URLs when available.
+- Prefer workflow JSON + explicit bindings over manual UI node edits.
+- Treat prompt + workflow + seed as a reproducibility unit.
+- Keep generated art free of text unless explicitly requested.
+- For multi-page books, QA in small batches and regenerate only flagged pages.
 
 ## References
 
 - `references/comfy-api.md` for endpoint contracts and run lifecycle.
-- `references/prompting.md` for compact prompt spec patterns.
+- `references/prompting.md` for compact prompt-spec patterns.
+- `references/local-workflow.md` for RenderSpec/pipeline path contracts.
+- `plans.md` for phase-by-phase orchestration guidance.

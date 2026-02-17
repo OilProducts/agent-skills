@@ -4,11 +4,11 @@
 
 Pipeline assets are bundled with this skill:
 
-- `$CODEX_HOME/skills/local-comfy-image-gen/orchestrator/run_page.py`
-- `$CODEX_HOME/skills/local-comfy-image-gen/workflows/*.api.json`
-- `$CODEX_HOME/skills/local-comfy-image-gen/workflows/*.bindings.json`
-- `$CODEX_HOME/skills/local-comfy-image-gen/schemas/*.json`
-- `$CODEX_HOME/skills/local-comfy-image-gen/templates/*.json`
+- `$CODEX_HOME/skills/comfyui-image-gen/orchestrator/run_page.py`
+- `$CODEX_HOME/skills/comfyui-image-gen/workflows/*.api.json`
+- `$CODEX_HOME/skills/comfyui-image-gen/workflows/*.bindings.json`
+- `$CODEX_HOME/skills/comfyui-image-gen/schemas/*.json`
+- `$CODEX_HOME/skills/comfyui-image-gen/templates/*.json`
 
 Comfy runtime is separate (GPU host):
 
@@ -21,7 +21,7 @@ Comfy runtime is separate (GPU host):
 
 - explicit `--repo` / `PIPELINE_REPO`
 - current working directory (if it contains `orchestrator/run_page.py`)
-- skill root (`$CODEX_HOME/skills/local-comfy-image-gen`)
+- skill root (`$CODEX_HOME/skills/comfyui-image-gen`)
 
 `start_comfy.sh` resolves runtime repo in this order:
 
@@ -75,7 +75,7 @@ Use this when ComfyUI runs on a GPU host and Codex runs on another machine.
 COMFY_RUNTIME_REPO=/path/to/local-image-gen \
 HOST=0.0.0.0 \
 COMFY_URL=http://127.0.0.1:8188 \
-$CODEX_HOME/skills/local-comfy-image-gen/scripts/start_comfy.sh
+$CODEX_HOME/skills/comfyui-image-gen/scripts/start_comfy.sh
 ```
 
 2. Confirm LAN reachability:
@@ -88,17 +88,17 @@ curl -sS http://<gpu-host-ip>:8188/system_stats
 
 1. Ensure this skill exists:
 
-- `~/.codex/skills/local-comfy-image-gen`
+- `~/.codex/skills/comfyui-image-gen`
 
 2. Run phase against remote ComfyUI:
 
 ```bash
 COMFY_URL=http://<gpu-host-ip>:8188 \
-~/.codex/skills/local-comfy-image-gen/scripts/run_phase.sh \
+~/.codex/skills/comfyui-image-gen/scripts/run_phase.sh \
   --book-id my_book \
   --page 1 \
   --phase draft \
-  --renderspec ~/.codex/skills/local-comfy-image-gen/templates/renderspec.example.json \
+  --renderspec ~/.codex/skills/comfyui-image-gen/templates/renderspec.example.json \
   --books-dir /path/to/project/books
 ```
 
