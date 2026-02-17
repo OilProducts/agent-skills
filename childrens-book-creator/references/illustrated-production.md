@@ -2,7 +2,15 @@
 
 Use this guide when the user asks for a full write-and-illustrate workflow.
 
-## 1) Preflight checks (before live generation)
+## 1) Choose generation backend
+
+- Use `imagegen` for OpenAI API generation/editing workflows.
+- Use `local-comfy-image-gen` when ComfyUI/FLUX is running locally or on a trusted LAN GPU host.
+- Do not mix both backends in the same batch unless the user explicitly wants that.
+
+## 2) Preflight checks (before live generation)
+
+### If using `imagegen`
 
 - Confirm key and runtime in the active shell:
   - `OPENAI_API_KEY` is set in the shell that will run generation.
@@ -12,7 +20,15 @@ Use this guide when the user asks for a full write-and-illustrate workflow.
   - `image_gen.py generate-batch --dry-run ...`
   - Verify prompt wiring, output paths, and job count.
 
-## 2) Prompt lock rules
+### If using `local-comfy-image-gen`
+
+- Confirm `local-image-gen` repo is available and pass `--repo` (or set `REPO` / `LOCAL_IMAGE_GEN_REPO`).
+- Confirm ComfyUI endpoint is reachable (`COMFY_URL=http://<gpu-host-ip>:8188` for remote GPU host).
+- Run a dry run first:
+  - `run_phase.sh --phase draft --dry-run ...`
+  - Verify compiled workflow output and page/job paths.
+
+## 3) Prompt lock rules
 
 - Repeat the full character/style lock in every per-page prompt.
 - Avoid cross-line shorthand in JSONL:
@@ -21,14 +37,14 @@ Use this guide when the user asks for a full write-and-illustrate workflow.
   - Example: if character is "Teddy", state "real dog, never teddy bear/plush".
 - Repeat "no text/no watermark" in each prompt.
 
-## 3) Batch generation rules
+## 4) Batch generation rules
 
 - Use stable, flat output names:
   - `<slug>-page-00-cover.png`, `<slug>-page-01.png`, ...
 - Start with one variant per page (`n=1`) for consistency.
 - If one page fails moderation, reword only that prompt and rerun only that page.
 
-## 4) QA loop (required for illustrated books)
+## 5) QA loop (required for illustrated books)
 
 Run at least one page-by-page visual pass and check:
 
@@ -44,7 +60,7 @@ If issues appear:
 - Strengthen lock language for failed dimensions (identity, props, style).
 - Re-run and re-check flagged pages.
 
-## 5) Final package checks
+## 6) Final package checks
 
 - Build print-ready PDF from manuscript + final images.
 - Validate PDF page count.

@@ -1,6 +1,6 @@
 ---
 name: local-comfy-image-gen
-description: "Run local ComfyUI image generation pipelines with RenderSpec-driven orchestration for books and multi-page projects. Use when working in a local ComfyUI repo (especially /home/chris/projects/local-image-gen) to start/check ComfyUI, run draft/refine/inpaint/upscale phases, manage renderspec.json and review.json, and produce reproducible page artifacts under books/{book_id}/pages/{page}/."
+description: "Run local ComfyUI image generation pipelines with RenderSpec-driven orchestration for books and multi-page projects. This skill bundles the orchestrator/workflows/templates; Comfy runtime is separate (commonly ~/projects/local-image-gen). Use it to start/check ComfyUI, run draft/refine/inpaint/upscale phases, manage renderspec.json and review.json, and produce reproducible artifacts."
 ---
 
 # Local Comfy Image Gen
@@ -16,8 +16,8 @@ Execute local ComfyUI rendering workflows through the project orchestrator, not 
 - If required files are missing, fix setup before rendering.
 
 2. Ensure ComfyUI server is available.
-- If already running on `http://192.168.1.224:8188`, reuse it.
-- Else run `scripts/start_comfy.sh`.
+- If already running on `http://127.0.0.1:8188`, reuse it.
+- Else run `scripts/start_comfy.sh` (set `COMFY_RUNTIME_REPO` if runtime is not at `~/projects/local-image-gen`).
 
 3. Build or update RenderSpec using a structured prompt pattern.
 - Use the prompt-spec style from `imagegen` (scene, subject, style, composition, constraints, avoids).
@@ -30,6 +30,7 @@ Execute local ComfyUI rendering workflows through the project orchestrator, not 
 5. Run the orchestrator phase.
 - Use `scripts/run_phase.sh` for all phases.
 - Prefer one phase at a time so artifacts and review stay clean.
+- Outputs default to `./books` unless `--books-dir` is passed.
 
 6. Inspect output and iterate deliberately.
 - Inspect generated images under `books/<book_id>/pages/<page>/draft|refine|final/`.
@@ -78,7 +79,8 @@ $CODEX_HOME/skills/local-comfy-image-gen/scripts/run_phase.sh \
   --book-id gingerbear_01 \
   --page 7 \
   --phase draft \
-  --renderspec templates/renderspec.example.json
+  --renderspec $CODEX_HOME/skills/local-comfy-image-gen/templates/renderspec.example.json \
+  --books-dir books
 ```
 
 Run refine:
@@ -90,7 +92,8 @@ $CODEX_HOME/skills/local-comfy-image-gen/scripts/run_phase.sh \
   --phase refine \
   --renderspec books/gingerbear_01/pages/0007/renderspec.json \
   --review books/gingerbear_01/pages/0007/review.json \
-  --source-image books/gingerbear_01/pages/0007/draft/001_some_image.png
+  --source-image books/gingerbear_01/pages/0007/draft/001_some_image.png \
+  --books-dir books
 ```
 
 Dry-run compile only:
@@ -100,7 +103,7 @@ $CODEX_HOME/skills/local-comfy-image-gen/scripts/run_phase.sh \
   --book-id gingerbear_01 \
   --page 7 \
   --phase draft \
-  --renderspec templates/renderspec.example.json \
+  --renderspec $CODEX_HOME/skills/local-comfy-image-gen/templates/renderspec.example.json \
   --dry-run
 ```
 

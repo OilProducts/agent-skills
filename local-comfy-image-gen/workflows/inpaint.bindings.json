@@ -1,0 +1,18 @@
+{
+  "actions": [
+    {
+      "op": "set",
+      "node": "6",
+      "input": "text",
+      "template": "{render.scene}, targeted inpaint fix, preserve composition",
+      "optional": true
+    },
+    {
+      "op": "set",
+      "node": "10",
+      "input": "image",
+      "from": "phase_inputs.source_image_name",
+      "optional": true
+    }
+  ]
+}

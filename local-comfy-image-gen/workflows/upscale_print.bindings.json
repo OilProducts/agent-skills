@@ -1,0 +1,11 @@
+{
+  "actions": [
+    {
+      "op": "set",
+      "node": "10",
+      "input": "image",
+      "from": "phase_inputs.source_image_name",
+      "optional": true
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "book_id": "gingerbear_01",
+  "page": 7,
+  "phase": "draft",
+  "selected_candidates": [
+    {
+      "path": "draft/001_ComfyUI_00001_.png",
+      "reason": "Best composition and character readability."
+    },
+    {
+      "path": "draft/002_ComfyUI_00002_.png",
+      "reason": "Strong lighting fallback if we need an alternate."
+    }
+  ],
+  "final_pick": null,
+  "notes": "Reject drafts that include text or off-model faces.",
+  "reviewed_at_utc": "2026-02-10T00:00:00Z"
+}
+

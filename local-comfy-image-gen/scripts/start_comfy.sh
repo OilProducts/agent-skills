@@ -1,50 +1,52 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="${REPO:-}"
-COMFY_URL="${COMFY_URL:-http://192.168.1.224:8188}"
+COMFY_RUNTIME_REPO="${COMFY_RUNTIME_REPO:-}"
+COMFY_URL="${COMFY_URL:-http://127.0.0.1:8188}"
+DEFAULT_RUNTIME_REPO="$HOME/projects/local-image-gen"
 HOST="${HOST:-0.0.0.0}"
 PORT="${PORT:-8188}"
 
-auto_detect_repo() {
-  if [ -n "$REPO" ]; then
+auto_detect_runtime_repo() {
+  if [ -n "$COMFY_RUNTIME_REPO" ]; then
     return
   fi
   if [ -f "$PWD/comfyui/main.py" ]; then
-    REPO="$PWD"
+    COMFY_RUNTIME_REPO="$PWD"
     return
   fi
-  if [ -d "/home/chris/projects/local-image-gen" ] && [ -f "/home/chris/projects/local-image-gen/comfyui/main.py" ]; then
-    REPO="/home/chris/projects/local-image-gen"
+  if [ -f "$DEFAULT_RUNTIME_REPO/comfyui/main.py" ]; then
+    COMFY_RUNTIME_REPO="$DEFAULT_RUNTIME_REPO"
     return
   fi
-  echo "[ERROR] Could not auto-detect repo. Set REPO=/path/to/local-image-gen" >&2
+  echo "[ERROR] Could not auto-detect runtime repo. Set COMFY_RUNTIME_REPO." >&2
   exit 1
 }
 
-auto_detect_repo
-LOG="${LOG:-$REPO/comfyui/comfy.log}"
+auto_detect_runtime_repo
+LOG="${LOG:-$COMFY_RUNTIME_REPO/comfyui/comfy.log}"
 
 if curl -fsS "$COMFY_URL/system_stats" >/dev/null 2>&1; then
   echo "[OK] ComfyUI already running at $COMFY_URL"
   exit 0
 fi
 
-if [ ! -f "$REPO/.venv/bin/python" ]; then
-  echo "[ERROR] Missing venv python at $REPO/.venv/bin/python" >&2
+if [ ! -f "$COMFY_RUNTIME_REPO/.venv/bin/python" ]; then
+  echo "[ERROR] Missing venv python at $COMFY_RUNTIME_REPO/.venv/bin/python" >&2
   exit 1
 fi
 
-if [ ! -f "$REPO/comfyui/main.py" ]; then
-  echo "[ERROR] Missing $REPO/comfyui/main.py" >&2
+if [ ! -f "$COMFY_RUNTIME_REPO/comfyui/main.py" ]; then
+  echo "[ERROR] Missing $COMFY_RUNTIME_REPO/comfyui/main.py" >&2
   exit 1
 fi
 
 mkdir -p "$(dirname "$LOG")"
-cd "$REPO/comfyui"
-nohup "$REPO/.venv/bin/python" main.py --listen "$HOST" --port "$PORT" > "$LOG" 2>&1 &
+cd "$COMFY_RUNTIME_REPO/comfyui"
+nohup "$COMFY_RUNTIME_REPO/.venv/bin/python" main.py --listen "$HOST" --port "$PORT" > "$LOG" 2>&1 &
 PID=$!
 echo "[OK] Started ComfyUI pid=$PID log=$LOG"
+echo "[INFO] Runtime repo: $COMFY_RUNTIME_REPO"
 echo "[INFO] Bound to host=$HOST port=$PORT"
 
 echo "[INFO] Waiting for API at $COMFY_URL ..."

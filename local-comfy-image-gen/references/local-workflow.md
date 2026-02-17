@@ -1,18 +1,33 @@
 # Local Workflow Reference
 
-## Repo assumptions
+## Layout and ownership
 
-Default project path:
+Pipeline assets are bundled with this skill:
 
-- `/home/chris/projects/local-image-gen`
+- `$CODEX_HOME/skills/local-comfy-image-gen/orchestrator/run_page.py`
+- `$CODEX_HOME/skills/local-comfy-image-gen/workflows/*.api.json`
+- `$CODEX_HOME/skills/local-comfy-image-gen/workflows/*.bindings.json`
+- `$CODEX_HOME/skills/local-comfy-image-gen/schemas/*.json`
+- `$CODEX_HOME/skills/local-comfy-image-gen/templates/*.json`
 
-Key files:
+Comfy runtime is separate (GPU host):
 
-- Orchestrator: `orchestrator/run_page.py`
-- Workflows: `workflows/draft.api.json`, `workflows/refine.api.json`, `workflows/inpaint.api.json`, `workflows/upscale_print.api.json`
-- Bindings: `workflows/*.bindings.json`
-- Schemas: `schemas/renderspec.v0.json`, `schemas/review.v0.json`
-- Templates: `templates/renderspec.example.json`, `templates/review.example.json`
+- Default runtime repo: `~/projects/local-image-gen`
+- Runtime entrypoint: `~/projects/local-image-gen/comfyui/main.py`
+
+## Script path resolution
+
+`run_phase.sh` and `check_setup.sh` resolve pipeline assets in this order:
+
+- explicit `--repo` / `PIPELINE_REPO`
+- current working directory (if it contains `orchestrator/run_page.py`)
+- skill root (`$CODEX_HOME/skills/local-comfy-image-gen`)
+
+`start_comfy.sh` resolves runtime repo in this order:
+
+- `COMFY_RUNTIME_REPO`
+- current working directory (if it contains `comfyui/main.py`)
+- `~/projects/local-image-gen`
 
 ## Artifact contract
 
@@ -39,31 +54,31 @@ High-value artifacts:
 
 Default local URL:
 
-- `http://192.168.1.224:8188`
+- `http://127.0.0.1:8188`
 
 Useful health checks:
 
 ```bash
-curl -sS http://192.168.1.224:8188/system_stats
-curl -sS http://192.168.1.224:8188/object_info
+curl -sS http://127.0.0.1:8188/system_stats
+curl -sS http://127.0.0.1:8188/object_info
 ```
 
-## Remote-agent mode (GPU box + laptop)
+## Remote-agent mode (GPU host + laptop)
 
-Use this when ComfyUI runs on a GPU host and Codex/agent runs on a different machine (laptop).
+Use this when ComfyUI runs on a GPU host and Codex runs on another machine.
 
 ### On GPU host
 
 1. Start ComfyUI on LAN interface:
 
 ```bash
-REPO=/path/to/local-image-gen \
+COMFY_RUNTIME_REPO=/path/to/local-image-gen \
 HOST=0.0.0.0 \
-COMFY_URL=http://192.168.1.224:8188 \
+COMFY_URL=http://127.0.0.1:8188 \
 $CODEX_HOME/skills/local-comfy-image-gen/scripts/start_comfy.sh
 ```
 
-2. Confirm LAN reachability from another machine:
+2. Confirm LAN reachability:
 
 ```bash
 curl -sS http://<gpu-host-ip>:8188/system_stats
@@ -71,54 +86,50 @@ curl -sS http://<gpu-host-ip>:8188/system_stats
 
 ### On laptop agent machine
 
-1. Ensure the same skill exists on laptop under:
+1. Ensure this skill exists:
 
 - `~/.codex/skills/local-comfy-image-gen`
 
-2. Clone/copy `local-image-gen` repo locally on laptop.
-
-3. Run orchestrator against remote ComfyUI:
+2. Run phase against remote ComfyUI:
 
 ```bash
 COMFY_URL=http://<gpu-host-ip>:8188 \
 ~/.codex/skills/local-comfy-image-gen/scripts/run_phase.sh \
-  --repo /path/to/local-image-gen \
   --book-id my_book \
   --page 1 \
   --phase draft \
-  --renderspec /path/to/local-image-gen/templates/renderspec.example.json
+  --renderspec ~/.codex/skills/local-comfy-image-gen/templates/renderspec.example.json \
+  --books-dir /path/to/project/books
 ```
 
 Notes:
 
-- Artifacts are written on the laptop repo under `books/`.
+- Artifacts are written to `--books-dir` (or default `./books`).
 - GPU execution happens on the remote ComfyUI host.
 - Keep both machines on the same trusted LAN.
+- For `refine`/`inpaint`/`upscale_print` with `--source-image`, pass `--comfy-input-dir` when the source must be copied to Comfy's `input/`.
 
-## Model layout used in this project
+## Runtime model layout (on GPU host)
 
 - `comfyui/models/diffusion_models/flux1-dev.safetensors`
 - `comfyui/models/diffusion_models/FHDR_ComfyUI.safetensors`
 - `comfyui/models/text_encoders/clip_l.safetensors`
 - `comfyui/models/text_encoders/t5xxl_fp16.safetensors`
 - `comfyui/models/vae/ae.safetensors`
-
-SD1.5 fallback present:
-
-- `comfyui/models/checkpoints/v1-5-pruned-emaonly.safetensors`
+- `comfyui/models/checkpoints/v1-5-pruned-emaonly.safetensors` (fallback)
 
 ## Troubleshooting
 
-1. `Operation not permitted` when posting to `/prompt`:
-- Run orchestrator with escalated permissions.
+1. `Operation not permitted` posting to `/prompt`:
+- Run orchestration command with escalated permissions.
 
 2. ComfyUI starts but no GPU:
-- Launch ComfyUI with escalated permissions so CUDA device is visible.
+- Start ComfyUI with escalated permissions so CUDA devices are visible.
 
-3. Workflow submission fails with node/input errors:
+3. Workflow submission errors:
 - Verify node ids and input keys in `workflows/<phase>.api.json` against `/object_info/<NodeType>`.
-- Verify `workflows/<phase>.bindings.json` maps to existing node ids.
+- Verify `workflows/<phase>.bindings.json` node/input mappings.
 
-4. Output generated but wrong style:
-- Adjust binding templates first (`clip_l`, `t5xxl`, constraints).
-- Keep seed fixed while tuning prompt/bindings to compare changes.
+4. Output style drift:
+- Adjust bindings/templates first.
+- Keep seed fixed while tuning prompt/bindings.

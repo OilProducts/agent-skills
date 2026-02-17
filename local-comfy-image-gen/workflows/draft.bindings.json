@@ -1,0 +1,57 @@
+{
+  "actions": [
+    {
+      "op": "format",
+      "node": "41",
+      "input": "clip_l",
+      "template": "{render.scene}, children's book illustration, watercolor storybook style, warm cinematic light, highly detailed",
+      "optional": true
+    },
+    {
+      "op": "format",
+      "node": "41",
+      "input": "t5xxl",
+      "template": "{render.scene}. Keep exactly two characters, no text, child-safe, expressive faces, clean readable composition.",
+      "optional": true
+    },
+    {
+      "op": "set",
+      "node": "31",
+      "input": "seed",
+      "from": "render.seed",
+      "default": 42,
+      "optional": true
+    },
+    {
+      "op": "set",
+      "node": "27",
+      "input": "width",
+      "from": "render.resolution.width",
+      "default": 768,
+      "optional": true
+    },
+    {
+      "op": "set",
+      "node": "27",
+      "input": "height",
+      "from": "render.resolution.height",
+      "default": 1024,
+      "optional": true
+    },
+    {
+      "op": "format",
+      "node": "9",
+      "input": "filename_prefix",
+      "template": "book_{book_id}_p{page}_draft_flux",
+      "optional": true
+    },
+    {
+      "op": "set",
+      "node": "38",
+      "input": "unet_name",
+      "from": "render.model.unet_name",
+      "default": "flux1-dev.safetensors",
+      "optional": true
+    }
+  ]
+}

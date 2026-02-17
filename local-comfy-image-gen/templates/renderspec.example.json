@@ -1,0 +1,55 @@
+{
+  "book_id": "gingerbear_01",
+  "page": 7,
+  "intent": "illustration",
+  "scene": "Bear and Gingerbread Boy cross a creek on stepping stones at sunset",
+  "characters": [
+    {
+      "id": "bear",
+      "pose": "carefully stepping",
+      "emotion": "focused"
+    },
+    {
+      "id": "gingerbread",
+      "pose": "arms wide balancing",
+      "emotion": "excited"
+    }
+  ],
+  "camera": {
+    "shot": "wide",
+    "angle": "slightly above",
+    "lens": "storybook"
+  },
+  "environment": {
+    "time": "golden hour",
+    "weather": "clear",
+    "location": "forest creek"
+  },
+  "constraints": [
+    "no text",
+    "two characters only",
+    "no extra limbs",
+    "kid-friendly",
+    "clean background"
+  ],
+  "style_pack": "watercolor_whimsy_v1",
+  "refs": {
+    "style": [
+      "bible/style_refs/style_03.png"
+    ],
+    "characters": {
+      "bear": [
+        "bible/character_refs/bear_sheet_A.png"
+      ],
+      "gingerbread": [
+        "bible/character_refs/gb_sheet_B.png"
+      ]
+    }
+  },
+  "resolution": {
+    "width": 768,
+    "height": 1024
+  },
+  "seed": 1234567
+}
+

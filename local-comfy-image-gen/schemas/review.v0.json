@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local-image-gen/schemas/review.v0.json",
+  "title": "Review v0",
+  "type": "object",
+  "required": [
+    "book_id",
+    "page",
+    "phase",
+    "selected_candidates"
+  ],
+  "properties": {
+    "book_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "page": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ]
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "refine",
+        "inpaint",
+        "upscale_print"
+      ]
+    },
+    "selected_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "reason"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "score_note": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "final_pick": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "notes": {
+      "type": "string"
+    },
+    "reviewed_at_utc": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": true
+}
+

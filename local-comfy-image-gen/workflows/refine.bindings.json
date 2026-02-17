@@ -1,0 +1,26 @@
+{
+  "actions": [
+    {
+      "op": "set",
+      "node": "6",
+      "input": "text",
+      "from": "render.scene",
+      "optional": true
+    },
+    {
+      "op": "set",
+      "node": "10",
+      "input": "image",
+      "from": "phase_inputs.source_image_name",
+      "optional": true
+    },
+    {
+      "op": "set",
+      "node": "3",
+      "input": "seed",
+      "from": "render.seed",
+      "default": 42,
+      "optional": true
+    }
+  ]
+}
